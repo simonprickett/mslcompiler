@@ -1,0 +1,355 @@
+****** STARTING MSL COMPILER ******
+
+  1 -- Program designed to test most features of MSL.
+  2 
+  3 -- 'Sort' is a recursive form of insertion sort: to sort an array of size N,
+  4 -- first sort the segment from element 1 up to N-1, then "slide" the value
+  5 -- at element N to its correct position, thus leaving all N values sorted.
+  6 
+  7 RESERVE 80
+  8 
+  9 PROC Swap(Array, I, J)
+ 10   Temp := Array!I
+ 11   Array!I := Array!J
+ 12   Array!J := Temp
+ 13 END
+ 14 
+ 15 PROC Sort(A, N)
+ 16   IF N-1 >= 2 THEN          -- segment 1..N-1 has at least 2 elems to sort
+ 17     CALL Sort(A, N-1)
+ 18   FI
+ 19   Sliding := 1              -- 1 => TRUE
+ 20   WHILE Sliding & (N>=2) DO
+ 21     IF A!N < A!(N-1) THEN   -- value has not yet reached correct position
+ 22       CALL Swap(A, N, N-1)  -- so slide it down one place
+ 23       N := N-1              -- NB: Parameter N used as local variable
+ 24     ELSE                    -- value in correct place - switch off sliding:
+ 25       Sliding := 0          -- 0 => FALSE
+ 26     FI
+ 27   OD
+ 28 END
+ 29 
+ 30 PROC GetDataName
+ 31   DataName := 1               -- array to hold data title as read in
+ 32   UnderLine := 21             -- array to hold '=' chars
+ 33   READ #DataName
+ 34   WRITE #DataName
+ 35   NumChar := DataName!0
+ 36   UnderLine!0 := NumChar      -- construct string of '=' chars 
+ 37   WHILE NumChar > 0 DO        -- of same length as data title
+ 38     UnderLine!NumChar := 61   -- 61 is ASCII code for '='
+ 39     NumChar := NumChar - 1
+ 40   OD
+ 41   WRITE #UnderLine
+ 42   WRITE ""                    -- causes blank line in output
+ 43 END
+ 44 
+ 45 WRITE "Sort test started"
+ 46 WRITE ""
+ 47 CALL GetDataName
+ 48 
+ 49 SortArray := 41                  -- array to hold data to sort
+ 50 NumItems := 0                 
+ 51 READ DataVal
+ 52 WHILE DataVal<>0 DO
+ 53   NumItems := NumItems + 1 
+ 54   WRITE DataVal
+ 55   SortArray!NumItems := DataVal  -- for clarity, elem 0 of SortArray 
+ 56   READ DataVal                   -- is not used
+ 57 OD
+ 58 
+ 59 WRITE ""
+ 60 WRITE "Data terminated:", NumItems, " items to sort"
+ 61 
+ 62 CALL Sort(SortArray, NumItems) 
+ 63 
+ 64 WRITE ""
+ 65 WRITE #DataName, " after sorting:"
+ 66 WRITE ""
+ 67 Rank := 1
+ 68 WHILE Rank <= NumItems DO
+ 69   WRITE Rank, ")", SortArray!Rank
+ 70   Rank := Rank + 1
+ 71 OD
+ 72 WRITE ""
+ 73 WRITE "Sort test finished"
+ 74 .
+
+
+Symbol Table Dump
+=================
+
+Loc Symbol        Type     Entry Addr Num FPs    RTSL  Proc Ref    Position
+--- ------        ----     ---------- -------    ----  --------    --------
+
+  1 SWAP          ProcName          3       3     N/A       N/A         N/A
+  2 ARRAY         Formal P        N/A     N/A     N/A         1           1
+  3 I             Formal P        N/A     N/A     N/A         1           2
+  4 J             Formal P        N/A     N/A     N/A         1           3
+  5 TEMP          GlobVar         N/A     N/A      81       N/A         N/A
+  6 SORT          ProcName         32       2     N/A       N/A         N/A
+  7 A             Formal P        N/A     N/A     N/A         6           1
+  8 N             Formal P        N/A     N/A     N/A         6           2
+  9 SLIDING       GlobVar         N/A     N/A      82       N/A         N/A
+ 10 GETDATANAME   ProcName        114       0     N/A       N/A         N/A
+ 11 DATANAME      GlobVar         N/A     N/A      83       N/A         N/A
+ 12 UNDERLINE     GlobVar         N/A     N/A      84       N/A         N/A
+ 13 NUMCHAR       GlobVar         N/A     N/A      85       N/A         N/A
+ 14 SORTARRAY     GlobVar         N/A     N/A     106       N/A         N/A
+ 15 NUMITEMS      GlobVar         N/A     N/A     107       N/A         N/A
+ 16 DATAVAL       GlobVar         N/A     N/A     108       N/A         N/A
+ 17 RANK          GlobVar         N/A     N/A     160       N/A         N/A
+
+
+
+**** TM Code ****
+
+  1)  J    178
+  3)  LL     1
+  5)  LL     2
+  7)  ADD 
+  8)  LI  
+  9)  SG    81
+ 11)  LL     1
+ 13)  LL     2
+ 15)  ADD 
+ 16)  LL     1
+ 18)  LL     3
+ 20)  ADD 
+ 21)  LI  
+ 22)  SI  
+ 23)  LL     1
+ 25)  LL     3
+ 27)  ADD 
+ 28)  LG    81
+ 30)  SI  
+ 31)  RTN 
+ 32)  LL     2
+ 34)  LC     1
+ 36)  SUB 
+ 37)  LC     2
+ 39)  GE  
+ 40)  JF    53
+ 42)  HDR
+ 43)  LL     1
+ 45)  LL     2
+ 47)  LC     1
+ 49)  SUB 
+ 50)  JSR   32   2
+ 53)  LC     1
+ 55)  SG    82
+ 57)  LG    82
+ 59)  LL     2
+ 61)  LC     2
+ 63)  GE  
+ 64)  AND 
+ 65)  JF   113
+ 67)  LL     1
+ 69)  LL     2
+ 71)  ADD 
+ 72)  LI  
+ 73)  LL     1
+ 75)  LL     2
+ 77)  LC     1
+ 79)  SUB 
+ 80)  ADD 
+ 81)  LI  
+ 82)  LT  
+ 83)  JF   107
+ 85)  HDR
+ 86)  LL     1
+ 88)  LL     2
+ 90)  LL     2
+ 92)  LC     1
+ 94)  SUB 
+ 95)  JSR    3   3
+ 98)  LL     2
+100)  LC     1
+102)  SUB 
+103)  SL     2
+105)  J    111
+107)  LC     0
+109)  SG    82
+111)  J     57
+113)  RTN 
+114)  LC     1
+116)  SG    83
+118)  LC    21
+120)  SG    84
+122)  LG    83
+124)  RTXT
+125)  LG    83
+127)  WTXT
+128)  WNL 
+129)  LG    83
+131)  LC     0
+133)  ADD 
+134)  LI  
+135)  SG    85
+137)  LG    84
+139)  LC     0
+141)  ADD 
+142)  LG    85
+144)  SI  
+145)  LG    85
+147)  LC     0
+149)  GT  
+150)  JF   169
+152)  LG    84
+154)  LG    85
+156)  ADD 
+157)  LC    61
+159)  SI  
+160)  LG    85
+162)  LC     1
+164)  SUB 
+165)  SG    85
+167)  J    145
+169)  LG    84
+171)  WTXT
+172)  WNL 
+173)  LC    86
+175)  WTXT
+176)  WNL 
+177)  RTN 
+178)  LC    87
+180)  WTXT
+181)  WNL 
+182)  LC   105
+184)  WTXT
+185)  WNL 
+186)  HDR
+187)  JSR  114   0
+190)  LC    41
+192)  SG   106
+194)  LC     0
+196)  SG   107
+198)  RNUM
+199)  SG   108
+201)  LG   108
+203)  LC     0
+205)  NE  
+206)  JF   232
+208)  LG   107
+210)  LC     1
+212)  ADD 
+213)  SG   107
+215)  LG   108
+217)  WNUM
+218)  WNL 
+219)  LG   106
+221)  LG   107
+223)  ADD 
+224)  LG   108
+226)  SI  
+227)  RNUM
+228)  SG   108
+230)  J    201
+232)  LC   109
+234)  WTXT
+235)  WNL 
+236)  LC   110
+238)  WTXT
+239)  LG   107
+241)  WNUM
+242)  LC   127
+244)  WTXT
+245)  WNL 
+246)  HDR
+247)  LG   106
+249)  LG   107
+251)  JSR   32   2
+254)  LC   142
+256)  WTXT
+257)  WNL 
+258)  LG    83
+260)  WTXT
+261)  LC   143
+263)  WTXT
+264)  WNL 
+265)  LC   159
+267)  WTXT
+268)  WNL 
+269)  LC     1
+271)  SG   160
+273)  LG   160
+275)  LG   107
+277)  LE  
+278)  JF   303
+280)  LG   160
+282)  WNUM
+283)  LC   161
+285)  WTXT
+286)  LG   106
+288)  LG   160
+290)  ADD 
+291)  LI  
+292)  WNUM
+293)  WNL 
+294)  LG   160
+296)  LC     1
+298)  ADD 
+299)  SG   160
+301)  J    273
+303)  LC   163
+305)  WTXT
+306)  WNL 
+307)  LC   164
+309)  WTXT
+310)  WNL 
+311)  STOP
+
+**** MSL execution starting ****
+
+Sort test started
+
+Test data 1995/96
+=================
+
+    21
+    19
+     8
+    27
+   127
+    36
+     8
+     4
+    10
+   100
+     8
+    36
+   127
+
+Data terminated:    13 items to sort
+
+Test data 1995/96 after sorting:
+
+     1)     4
+     2)     8
+     3)     8
+     4)     8
+     5)    10
+     6)    19
+     7)    21
+     8)    27
+     9)    36
+    10)    36
+    11)   100
+    12)   127
+    13)   127
+
+Sort test finished
+
+
+**** MSL execution terminated normally after 2804 instructions ****
+
+
+Statistics :
+============
+
+The program contained 3 procedures, 45 statements, and 0 syntax errors.
+
+
+
+******  END OF MSL COMPILER  ******
+

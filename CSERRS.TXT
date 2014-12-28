@@ -1,0 +1,152 @@
+****** STARTING MSL COMPILER ******
+
+  1 --  CF correct test program for the MSL syntax analyser.
+  2 --  Tests the MSL analyser, and includes nested constructs.
+  3 --  This program has a number of context sensitive errors
+  4 --  in it, highlighted with ***CS error - explanation ***
+  5 --  in the code.
+  6 
+  7 --  This is a modified version of the program submitted 
+  8 --  with the second stage of the coursework.
+  9 
+ 10 --  Note that as the context sentsitive checking does not
+ 11 --  detect the error until after a MustBe (Idr), the 
+ 12 --  errors for the code on lines 83, 88, 93 & 98 
+ 13 --  will not appear until after the next line has been
+ 14 --  output.
+ 15 
+ 16 --  Author : Simon Prickett
+ 17 --  Module : CS310, Programming Language Implementation
+ 18 --  FAO    : Dr Elsworth
+ 19 --  Date   : 5/01/96
+ 20 
+ 21 RESERVE 150
+ 22 
+ 23 --  The following tests nested contructs amongst other things.
+ 24 
+ 25 PROC TestProc (x,y,z)
+ 26         IF x>y THEN
+ 27                 WHILE z>20 DO
+ 28                         z:=z-1
+ 29                         IF x=19 THEN
+ 30                                 x:=x+1
+ 31                         ELSE
+ 32                                 y:=y-1
+ 33                         FI
+ 34                         WRITE "Testing..."
+ 35                         WRITE ""
+ 36                 OD
+ 37         FI
+ 38         WRITE "Testing again..."
+ 39         WRITE ""
+ 40 END
+ 41 
+ 42 -- Test of a PROC with no parameters.
+ 43 
+ 44 PROC SecondProc
+ 45         WRITE "In SecondProc..."
+ 46         WRITE ""
+ 47 END
+ 48 
+ 49 -- *** CS error : attempt to use a proc name as a formal parameter ***
+ 50 
+ 51 PROC ThirdProc (SecondProc)
+    Syntax Error : Identifier already used - invalid FORMAL PARAMETER name : SECONDPROC  
+ 52         WRITE "This won't work"
+ 53         WRITE ""
+ 54 
+ 55         -- *** CS error : attempt to use another proc's formal parameter ***
+ 56         z:=1
+    Syntax Error : Identifier not available in the current scope : Z           
+ 57 END
+ 58 
+ 59 -- *** CS error : attempt to define a proc that already exists ***
+ 60 
+ 61 PROC TestProc (anarg)
+    Syntax Error : Identifier already used - invalid PROC name : TESTPROC    
+ 62         WRITE "This proc has already been defined!!"
+ 63         WRITE ""
+ 64 END
+ 65 
+ 66 -- Main program.
+ 67 
+ 68 a:=1
+ 69 b:=a
+ 70 c:=a+1
+ 71 
+ 72 -- *** CS error : attempt to use a formal param out of scope ***
+ 73 y:=c 
+    Syntax Error : Identifier not available in the current scope : Y           
+ 74 
+ 75 -- *** CS error : attempt to use a proc name as a global ***
+ 76 SecondProc := a
+    Syntax Error : PROC name used incorrectly : SECONDPROC  
+ 77 
+ 78 READ d
+ 79 CALL TestProc (a,b,d)
+ 80 CALL SecondProc
+ 81 
+ 82 -- *** CS error : attempt to call TestProc with wrong # args ***
+ 83 CALL TestProc (a,b)
+ 84 
+ 85 WRITE a
+    Syntax Error : Incorrect number of actual parameters for call to TESTPROC    
+ 86 
+ 87 -- *** CS error : attempt to call SecondProc with wrong # args ***
+ 88 CALL SecondProc (c)
+ 89 
+ 90 WRITE c
+    Syntax Error : Incorrect number of actual parameters for call to SECONDPROC  
+ 91 
+ 92 -- *** CS error : call to undefined proc ***
+ 93 CALL UdProc       
+ 94 
+ 95 a:=2
+    Syntax Error : PROC undefined : UDPROC      
+ 96 
+ 97 -- *** CS error : call to undefined proc with arguments ***
+ 98 CALL UdProc (arg1, arg2)
+    Syntax Error : PROC undefined : UDPROC      
+ 99 
+100 WRITE a
+101 
+102 -- The rest of this program is CS correct, and is left in to show
+103 -- that syntax analysis is still working.
+104 
+105 WHILE a!1>a!2 DO
+106         IF d<>0 THEN
+107                 WRITE "Value of d is : ",d
+108                 WRITE ""
+109                 IF d=1 THEN
+110                         WRITE "Invalid!"
+111                         WRITE ""
+112                         WRITE "I need a new d value : "
+113                         READ d
+114                 ELSE
+115                         WRITE "Valid!"
+116                         WRITE ""
+117                 FI
+118         ELSE
+119                 WRITE "0 is not allowed for d!"
+120                 WRITE ""
+121                 WRITE "I need a new d value : "
+122                 READ d
+123         FI
+124 OD
+125 
+126 -- Quick test of READ/WRITE with #
+127 
+128 WRITE "Test of WRITE ",#AText!1
+129 READ #stuff
+130 .
+
+
+Statistics :
+============
+
+The program contained 4 procedures, 50 statements, and 9 syntax errors.
+
+
+
+******  END OF MSL COMPILER  ******
+

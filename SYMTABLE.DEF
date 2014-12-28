@@ -1,0 +1,90 @@
+DEFINITION MODULE Symtable;
+
+(* -------------------------------------------------------------------------- *)
+
+(* Definition module for the MSL symbol table module. 
+
+   Author : Simon Prickett
+   Module : CS310, Programming Language Implementation
+   FAO    : Dr Elsworth
+   Date   : 29/12/95
+*)
+
+(* STentry and associated data types are as given on the handout 
+   'Symbol Table and Context Sensitive Checks for MSL' I have changed the
+   type of RTSL, EntryAddress, NumFPs, ProcRef, and Position to be CARDINAL 
+   rather than INTEGER as these values can never be negative. *)
+
+CONST MaxIdrChars = 12;
+
+TYPE IdrChars = ARRAY [1..MaxIdrChars] OF CHAR;
+
+TYPE IdrClass = (GlobVar, ProcName, FormalParam);
+
+(* -------------------------------------------------------------------------- *)
+
+PROCEDURE GetIdrName (VAR IdrName : IdrChars);
+
+(* Returns the name of the current identifier. *)
+
+PROCEDURE StoreNumParams (ProcLoc, NumParams : CARDINAL);
+
+(* Stores the number of formal parameters for a procedure in the symbol table. *)
+
+PROCEDURE HowManyParams (TablePtr : CARDINAL) : CARDINAL;
+
+(* Returns the number of formal parameters expected by the procedure stored
+   in the symbol table at location TablePtr - only use this when TablePtr
+   points to a procedure entry! *)
+
+PROCEDURE GetProcRef (LocnToCheck : CARDINAL) : CARDINAL;
+
+(* Returns the location in the symbol table of the procedure which 'owns'
+   the formal parameter entry pointed to by LocnToCheck.  Should only be
+   used when LocnToCheck references a formal parameter. *)
+
+PROCEDURE GetEntryAddress (Locn : CARDINAL) : CARDINAL;
+ 
+(* Looks up and returns the entry address for a procedure stored in the
+   symbol table.  Should only be called when Locn points to a procedure. *)
+
+PROCEDURE GetRTSL (Locn : CARDINAL) : CARDINAL;
+
+(* Looks up and returns the RTSL for a variable stored in the symbol table. 
+   Should only be called when Locn points to a global variable entry. *)
+
+PROCEDURE GetPosition (Locn : CARDINAL) : CARDINAL;
+
+(* Looks up and returns the parameter position for the formal parameter in
+   the symbol table at Locn.  Should only be called when Locn points to a
+   formal parameter entry. *)
+
+PROCEDURE StoreEntryAddr (Locn : CARDINAL);
+
+(* Looks up the procedure stored in the symbol table at Locn and fills out
+   its entry address field.  Should only be called when Locn points to a
+   procedure in the symbol table. *)
+ 
+PROCEDURE AddToSymTable (IdrToAdd : IdrChars; IdrType : IdrClass; PRef, Posn : CARDINAL) : CARDINAL;
+
+(* Use this to add an entry to the symbol table - returns 0 if it fails
+   (ie if there is already an entry for that symbol) otherwise returns
+   location of the symbol's entry in the symbol table. 
+
+   PRef and Posn are only used when IdrType = FormalParam, pass in 0 and 0 when 
+   this is not the case. *)
+
+PROCEDURE LookUpInSymTable (IdrToFind : IdrChars; ExpectedType : IdrClass) : CARDINAL;
+
+(* Use this to check if an entry is in the symbol table - will return the
+   location if it is, otherwise returns 0 UNLESS the entry is a global
+   variable in which case it is added to the symbol table unless it is
+   there already in which case 0 is returned. *)
+
+PROCEDURE TableDump;
+
+(* Use this to print out the contents of the symbol table. *)
+
+(* -------------------------------------------------------------------------- *)
+
+END Symtable.

@@ -1,0 +1,45 @@
+DEFINITION MODULE Codegen;
+
+(* MSL code generation module.
+
+   Author : Simon Prickett
+   Module : CS310, Programming Language Implementation
+   FAO    : Dr Elsworth
+   Date   : 05/01/96
+*)
+
+FROM TM IMPORT
+	PSsize, TMopcode;
+
+(* Will need a pointer into the program store.  This should NOT be manipulated
+   manually - is needed here for IMPORT elsewhere. *)
+
+VAR PSPointer : CARDINAL [1..PSsize + 1];
+
+(* -------------------------------------------------------------------------- *)
+
+PROCEDURE cg1 (Code : TMopcode);
+
+(* Use cg1 to generate TM code for a '1 item instruction' eg RTN *)
+
+PROCEDURE cg2 (Code : TMopcode; Card : CARDINAL);
+
+(* Use cg2 to generate TM code for a '2 item instruction' eg LC N *)
+
+PROCEDURE cg3 (Code : TMopcode; EntryAddr, NParams : CARDINAL);
+
+(* Use cg3 to generate TM code for a '3 item instruction' eg JSR EA NumParams *)
+
+PROCEDURE GetPSPointerVal () : CARDINAL;
+
+(* Use this to get the current value of the pointer into the program
+   store - only use to fix up forward jumps. *)
+
+PROCEDURE FixJump (Locn : CARDINAL);
+ 
+(* Inserts the value of PSPointer into the program store at Locn.  Used for
+   fixing up forward jumps. *)
+
+(* -------------------------------------------------------------------------- *)
+
+END Codegen.

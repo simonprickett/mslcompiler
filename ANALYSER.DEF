@@ -1,0 +1,24 @@
+DEFINITION MODULE Analyser;
+
+(* -------------------------------------------------------------------------- *)
+
+(* Definition module for MSL Analyser.
+
+   Author : Simon Prickett
+   Module : CS310, Programming Language Implementation
+   FAO    : Dr Elsworth
+   Date   : 26/11/95
+*)
+
+VAR TotalErrors,                (* Tracks # syntax errors detected *)
+    NumProcs,                   (* Tracks # procedures encountered *)
+    NumStmts    : CARDINAL;     (* Tracks # statements encountered *)
+
+(* Program is the RDSA procedure for recognising an MSL program - it is the
+   entry point to the RDSA network implemented within Analyser.mod *)
+
+PROCEDURE Program;
+
+(* -------------------------------------------------------------------------- *)
+
+END Analyser.

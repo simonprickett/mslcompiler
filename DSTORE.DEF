@@ -1,0 +1,34 @@
+DEFINITION MODULE Datastore;
+
+(* Deals with managing allocation of the TM data store.
+
+   Author : Simon Prickett
+   Module : CS310, Programming Language Implementation
+   FAO    : Dr Elsworth
+   Date   : 05/01/96
+*)
+
+(* -------------------------------------------------------------------------- *)
+
+FROM Source IMPORT
+	LineChars;
+
+PROCEDURE ReserveSpace (SpaceToReserve : CARDINAL) : CARDINAL;
+
+(* Use this to request storage of SpaceToReserve units of data.  Halts
+   the compiler with an internal error if the request for space leads
+   to data store overflow. *)
+
+PROCEDURE StoreText (TextValue : LineChars; Len, DSLoc : CARDINAL);
+ 
+(* Stores the value for a text and its length bit in the data store at
+   data store location starting at DSLoc.  No need to check if this will
+   go off the end of the data store as space for this will already have
+   been requested using ReserveSpace. *)
+
+PROCEDURE DSDump; 
+ 
+(* Used for diagnostic purposes to dump the data store to screen/file. 
+   Will only dump the used portion of the store. *)
+
+END Datastore.

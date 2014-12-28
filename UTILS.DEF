@@ -1,0 +1,32 @@
+DEFINITION MODULE Utils;
+
+(* Utility module, contains stuff that didn't logically fit elsewhere. 
+
+   Author : Simon Prickett
+   Module : CS310, Programming Language Implementation
+   FAO    : Dr Elsworth
+   Date   : 26/11/95
+*)
+
+FROM Lex IMPORT Token;
+
+(* -------------------------------------------------------------------------- *)
+
+(* WriteToken turns a token into a text message and prints it, eg Idr ->
+   'Identifier' *)
+
+PROCEDURE WriteToken (ToWrite : Token);
+
+(* Header and Footer print the banners at the start and end of the output
+   of the Analyser. Statistics produces the end results, briefly stating
+   how many errors, procedures, and statements were found. *)
+
+PROCEDURE Header;
+
+PROCEDURE Footer;
+
+PROCEDURE Statistics (ProcsFound, StmtsFound, ErrorsFound : CARDINAL);
+
+(* -------------------------------------------------------------------------- *)
+
+END Utils.
